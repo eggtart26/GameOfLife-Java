@@ -16,6 +16,9 @@ public class GameOfLifeJava {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        GameOfLife_JFrame life = new GameOfLife_JFrame();
+        life.setLocationRelativeTo(null);
+        life.show();
     }
     
 }
