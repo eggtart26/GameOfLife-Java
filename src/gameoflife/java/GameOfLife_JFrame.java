@@ -11,6 +11,7 @@ import java.awt.Image;
 import java.awt.Graphics;
 import java.awt.Color;
 
+
 /**
  *
  * @author justinguan
@@ -166,4 +167,6 @@ public class GameOfLife_JFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+
+
 }
