@@ -18,7 +18,7 @@ import java.awt.Color;
  */
 public class GameOfLife_JFrame extends javax.swing.JFrame {
     
-    final int wid = 200, hei = 100;
+    final int wid = 400, hei = 100;
     boolean[][] currentMove = new boolean[hei][wid], nextMove = new boolean[hei][wid] ;
     boolean play;
     Image offScrImg;
@@ -34,13 +34,23 @@ public class GameOfLife_JFrame extends javax.swing.JFrame {
     private void repain(){
         offScrGraph.setColor(jPanel1.getBackground());
         offScrGraph.fillRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
+        for(int i = 0; i < hei; i += 1) {
+            for(int j = 0; j < hei; j += 1){
+               if(currentMove[i][j]) {
+               offScrGraph.setColor(Color.YELLOW);
+               int x = j * jPanel1.getWidth() / wid;
+               int y = i * jPanel1.getHeight() / hei;
+               offScrGraph.fillRect(x, y, jPanel1.getWidth()/wid, jPanel1.getHeight()/hei); 
+               }
+            }
+        }
         offScrGraph.setColor(Color.BLACK);
         for(int i = 1; i < hei; i += 1) {
             int y = i * jPanel1.getHeight() / hei;
             offScrGraph.drawLine(0, y, jPanel1.getWidth(), y);
         }
         for(int j = 1; j < wid; j += 1) {
-            int x = j * jPanel1.getHeight() / wid;
+            int x = j * jPanel1.getWidth() / wid;
             offScrGraph.drawLine(x, 0, x, jPanel1.getHeight());   
         }
         
@@ -77,10 +87,15 @@ public class GameOfLife_JFrame extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 403, Short.MAX_VALUE)
+            .addGap(0, 256, Short.MAX_VALUE)
         );
 
         jButton1.setText("Play");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Reset");
 
@@ -94,7 +109,7 @@ public class GameOfLife_JFrame extends javax.swing.JFrame {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 487, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 197, Short.MAX_VALUE)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -115,6 +130,9 @@ public class GameOfLife_JFrame extends javax.swing.JFrame {
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
         // TODO add your handling code here:
+        int j = wid * evt.getX() / jPanel1.getWidth() ;
+        int i = hei * evt.getY() / jPanel1.getHeight() ;
+        currentMove[i][j] = !currentMove[i][j];
         repain();
     }//GEN-LAST:event_jPanel1MouseClicked
 
@@ -124,6 +142,14 @@ public class GameOfLife_JFrame extends javax.swing.JFrame {
         offScrGraph = offScrImg.getGraphics();
         repain();
     }//GEN-LAST:event_jPanel1ComponentResized
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        play = !play;
+        if(play) jButton1.setText("Pause");
+        else jButton1.setText("Play");
+        repain();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     
     
