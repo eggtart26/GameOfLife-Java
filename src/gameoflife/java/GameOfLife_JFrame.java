@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import java.awt.Image;
 import java.awt.Graphics;
 import java.awt.Color;
+import javax.swing.SwingUtilities;
 
 
 /**
@@ -18,7 +19,7 @@ import java.awt.Color;
  */
 public class GameOfLife_JFrame extends javax.swing.JFrame {
     
-    final int wid = 400, hei = 100;
+    final int wid = 200, hei = 100;
     boolean[][] currentMove = new boolean[hei][wid], nextMove = new boolean[hei][wid] ;
     boolean play;
     Image offScrImg;
@@ -28,14 +29,52 @@ public class GameOfLife_JFrame extends javax.swing.JFrame {
         initComponents();
         offScrImg = createImage(jPanel1.getWidth(), jPanel1.getHeight());
         offScrGraph = offScrImg.getGraphics();
+        Timer time = new Timer();
+        TimerTask task = new TimerTask(){
+            public void run() {
+                if(play) {
+                for(int i = 0; i < hei; i += 1) {
+                    for(int j = 0; j < wid; j += 1) {
+                        nextMove[i][j] = decide(i,j);
+                        }
+                    }
+                for(int i = 0; i < hei; i += 1) {
+                    for(int j = 0; j < wid; j += 1) {
+                        currentMove[i][j] = nextMove[i][j];
+                        }
+                    }
+                repain();
+                }
+            }
+        };
+        time.scheduleAtFixedRate(task, 0, 100);
         repain();
+    }
+    
+    private boolean decide(int i, int j){
+        int neighbors = 0;
+        if(j > 0){
+            if(currentMove[i][j-1]) neighbors += 1;
+            if(i > 0) if(currentMove[i-1][j-1]) neighbors += 1;
+            if(i<hei-1) if(currentMove[i+1][j-1]) neighbors += 1;
+        }
+        if(j > wid - 1){
+            if(currentMove[i][j+1]) neighbors += 1;
+            if(i > 0) if(currentMove[i-1][j+1]) neighbors += 1;
+            if(i<hei-1) if(currentMove[i+1][j+1]) neighbors += 1;
+        }
+        if(i > 0) if(currentMove[i-1][j]) neighbors += 1;
+        if(i < hei -1) if(currentMove[i+1][j]) neighbors += 1;
+        if(neighbors == 3) return true;
+        if(currentMove[i][j] && neighbors == 2) return true;
+        return false;
     }
     
     private void repain(){
         offScrGraph.setColor(jPanel1.getBackground());
         offScrGraph.fillRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
         for(int i = 0; i < hei; i += 1) {
-            for(int j = 0; j < hei; j += 1){
+            for(int j = 0; j < wid; j += 1){
                if(currentMove[i][j]) {
                offScrGraph.setColor(Color.YELLOW);
                int x = j * jPanel1.getWidth() / wid;
@@ -68,6 +107,11 @@ public class GameOfLife_JFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                jPanel1MouseDragged(evt);
+            }
+        });
         jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel1MouseClicked(evt);
@@ -130,10 +174,10 @@ public class GameOfLife_JFrame extends javax.swing.JFrame {
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
         // TODO add your handling code here:
-        int j = wid * evt.getX() / jPanel1.getWidth() ;
-        int i = hei * evt.getY() / jPanel1.getHeight() ;
-        currentMove[i][j] = !currentMove[i][j];
-        repain();
+//        int j = wid * evt.getX() / jPanel1.getWidth() ;
+//        int i = hei * evt.getY() / jPanel1.getHeight() ;
+//        currentMove[i][j] = !currentMove[i][j];
+//        repain();
     }//GEN-LAST:event_jPanel1MouseClicked
 
     private void jPanel1ComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanel1ComponentResized
@@ -150,6 +194,16 @@ public class GameOfLife_JFrame extends javax.swing.JFrame {
         else jButton1.setText("Play");
         repain();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
+        // TODO add your handling code here:
+        int j = wid * evt.getX() / jPanel1.getWidth();
+        int i = hei * evt.getY() / jPanel1.getHeight();
+        if(SwingUtilities.isLeftMouseButton(evt)) {
+            currentMove[i][j] = true;
+        } else currentMove[i][j] = false;
+        repain();
+    }//GEN-LAST:event_jPanel1MouseDragged
 
     
     
